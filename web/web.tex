@@ -1,0 +1,138 @@
+\chapter{The web of complexities}
+
+\section{Modern means of computing}
+\textbf{The world of computing} has been \textit{vastly} changed by \textit{modern means of inter-components communication}, allowing computing systems to \textit{geographically} extend at an affordable overhead. This allowed the emergence of new software services as well as \textbf{new means of programming}. 
+
+Undoubtedly, \textit{the internet} has become a massive source of power and with this new technology the information is able to spread really quickly around the world.
+
+While there are many notable achievements in software services that were created over networks, \textit{including e-commerce platforms, social media services or e-Gov apps}, the focus of this chapter is to embrace the new paradigm of \textbf{distributed computing and web development} on \textbf{complexity calculus} and \textit{present means of computing} an estimated complexity for complex applications that require new features such as mechanisms for \textit{networking handling} which have not been analyzed yet.
+
+\section{HTTP requests and algorithm complexity}
+
+There are numerous way of inter-system communication, provided by powerful protocols. Undoubtable, the most used communication protocol between software systems is \textbf{HTTP} (Hypertext Transfer Protocol), an application-level protocol for distributed, collaborative, hypermedia information systems. HTTP operates as a \textit{request - response protocol} in the \textit{client - server  model}.
+
+The \textit{scenario of development} when the client sends a request to the server and the server send an associated response is frequently encountered in \textit{web applications development}. We will analyze how to integrate this \textit{overhead} in the complexity model presented.
+
+Consider the following \textit{scenario}: The results of this paper appears to be interesting and you may want to re-use them and further analyze them. You built your custom computer program and you want to acquire all practical results provided so far. Note that the development might still be in progress, so you would like that every time you run the software, an up-to-date version of all results should be available. Luckily, these can be achieved via HTTP-requests, as all of the results are stored publicly on GitHub. Therefore, you can use GitHub Developer API, to view the latest published full release for the repository.
+
+\begin{verbatim}
+GET /repos/:owner/:repo/releases/
+\end{verbatim}
+
+In \textbf{Python}, the code required to achieve this would reduce to an one-liner, using requests, an elegant and simple HTTP library for Python.
+
+\begin{verbatim}
+r = requests.get('https://api.github.com/repos/raresraf/rafmetrics/releases')
+\end{verbatim}
+
+The response of the server will contain the required information, formatted as a JSON:
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+    "url":
+    "https://api.github.com/repos/raresraf/rafMetrics/releases/26933384",
+    "assets_url":
+    "https://api.github.com/repos/raresraf/rafMetrics/releases/26933384/assets",
+    "upload_url":
+    "https://uploads.github.com/repos/raresraf/rafMetrics/releases/26933384/assets{?name,label}",
+    "html_url":
+    "https://github.com/raresraf/rafMetrics/releases/tag/v0.1-alpha",
+    "id": 26933384,
+    "node_id": "MDc6UmVsZWFzZTI2OTMzMzg0",
+    "tag_name": "v0.1-alpha",
+    "target_commitish": "master",
+    "name": "Alpha Baby rafMetrics",
+    "draft": false,
+    "author": {
+        "login": "raresraf",
+        "id": 30867783,
+        "node_id": "MDQ6VXNlcjMwODY3Nzgz",
+        "avatar_url": "https://avatars0.githubusercontent.com/u/30867783?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/raresraf",
+        "html_url": "https://github.com/raresraf",
+        "followers_url": "https://api.github.com/users/raresraf/followers",
+        "following_url":
+        "https://api.github.com/users/raresraf/following{/other_user}",
+        "gists_url": "https://api.github.com/users/raresraf/gists{/gist_id}",
+        "starred_url":
+        "https://api.github.com/users/raresraf/starred{/owner}{/repo}",
+        "subscriptions_url":
+        "https://api.github.com/users/raresraf/subscriptions",
+        "organizations_url": "https://api.github.com/users/raresraf/orgs",
+        "repos_url": "https://api.github.com/users/raresraf/repos",
+        "events_url": "https://api.github.com/users/raresraf/events{/privacy}",
+        "received_events_url":
+        "https://api.github.com/users/raresraf/received_events",
+        "type": "User",
+        "site_admin": false
+    },
+    "prerelease": true,
+    "created_at": "2020-05-27T08:43:19Z",
+    "published_at": "2020-05-27T08:48:24Z",
+    "assets": [],
+    "tarball_url":
+    "https://api.github.com/repos/raresraf/rafMetrics/tarball/v0.1-alpha",
+    "zipball_url":
+    "https://api.github.com/repos/raresraf/rafMetrics/zipball/v0.1-alpha",
+    "body": "`rafMetrics` v0.1-alpha release"
+}]
+\end{lstlisting}
+
+We aim to provide a solution to estimate the time-complexity for the Python-snippet that makes an HTTP request and theoretically, in the traditional complexity model, the operation should take constant time (computing well-defined finite header, simple system call to networking drivers, constant number of steps): $O(1)$. However, it is intuitive that this operation will take much more time to completely execute rather than an instruction such as $xor\ eax,\ eax$. And the r-Complexity excels at this kind of comparisons w.r.t. discrete analysis.
+
+Therefore, we aim to create a mapping between any call $r = requests.get(url)$ to an $O_{1}(X)$, where $X$ is the estimated overhead introduced by this procedure call. In Python, this can be achieved by $r.elapsed.total\_seconds()$. For instance, the previous example has a total elapsed time equal with 0.467 seconds, i.e. the associated r-Complexity class would therefore be $O_{1}(0.467 \cdot CPS)$ (CPS = cycle per second). 
+
+Of course, this value will not be unique, as each run may provide different outcomes. Therefore, for better estimations we created WebMonitoring tool, an easy-to-use empiric estimator for computing projections for the associated r-Complexity classes of HTTP requests. The platform is described \textit{in-detail} in the next chapter.
+
+
+\section{Empirical Big r-Complexity estimations for web resources}
+
+
+The current work propose the following associations between Big r-Complexity estimations for web resources and recorded entries: 
+
+\begin{enumerate}
+\item \textbf{Big \textit{r-}O} notation for a given request with $O_{1}(highest)$
+\item \textbf{Big \textit{r-}Omega} notation for a given request with $\Omega_{1}(lowest))$
+\item \textbf{Big \textit{r-}Theta} notation for a given request with $\Theta_{1}(avg)$ or $\Theta_{1}(median)$
+\end{enumerate}
+
+Note that these results are \textbf{empirical} and might significantly differ. Better approximations are obtained using continuously updating data, acquired in an environment that closely simulate the actual \textbf{targeted} habitat.
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{\begin{tabular}[c]{@{}l@{}}Resource\\ (GET Requests)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Avg\\ (s)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Lowest\\ (s)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Median\\ (s)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Highest\\ (s)\end{tabular}} \\ \hline
+https://github.com/raresraf/rafMetrics                                      & 0.68 & 0.43 & 0.49 & 2.99 \\ \hline
+https://google.com                                                          & 0.07 & 0.06 & 0.06 & 0.29 \\ \hline
+\begin{tabular}[c]{@{}l@{}}E-commerce website 1\\ (AliExpress)\end{tabular} & 0.3  & 0.2  & 0.23 & 0.85 \\ \hline
+\begin{tabular}[c]{@{}l@{}}E-commerce website 2\\ (Amazon)\end{tabular}     & 0.12 & 0.1  & 0.12 & 0.14 \\ \hline
+\begin{tabular}[c]{@{}l@{}}E-commerce website 3\\ (eMag)\end{tabular}       & 0.42 & 0.37 & 0.41 & 0.5  \\ \hline
+https://www.piday.org/                                                      & 0.87 & 0.78 & 0.87 & 0.98 \\ \hline
+\end{tabular}
+\caption {Different metrics for computing Big r-Complexity estimations for the presented web resources. Results acquired during late May 2020.}
+\end{table}
+
+All the results are obtained using the rafMetrics platform described in the following chapter.
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Website Total Loading Time} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Avg\\ (s)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Lowest\\ (s)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Median\\ (s)\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}Highest\\ (s)\end{tabular}} \\ \hline
+https://github.com/raresraf/rafMetrics                                      & 3.12 & 2.11 & 2.89 & 5.88  \\ \hline
+https://google.com                                                          & 2.41 & 1.12 & 2.5  & 4.12  \\ \hline
+\begin{tabular}[c]{@{}l@{}}E-commerce website 1\\ (AliExpress)\end{tabular} & 6.12 & 4.3  & 6.05 & 11.02 \\ \hline
+\begin{tabular}[c]{@{}l@{}}E-commerce website 2\\ (Amazon)\end{tabular}     & 3.4  & 2.13 & 3.36 & 5.49  \\ \hline
+\begin{tabular}[c]{@{}l@{}}E-commerce website 3\\ (eMag)\end{tabular}       & 6.3  & 4.34 & 5.99 & 11.2  \\ \hline
+https://www.piday.org/                                                      & 8.32 & 2.33 & 6.51 & 12.4  \\ \hline
+\end{tabular}
+\caption {Different metrics for computing Big r-Complexity estimations for the presented webpages. Results acquired during late May 2020.}
+\end{table}
+
+The analysis can be done using other metrics such as Response Size of the request, custom defined metrics for efficiency or throughput.
